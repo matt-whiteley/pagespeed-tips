@@ -10,10 +10,12 @@ The following points can be completed in any order, and each step will help the 
 These are the key points to consider that we will be optimising:
 * Prevent stylesheet load blocking the page render
 * Prevent javascript load from blocking page render
+* Replace `{{ content_for_header }}`
 * Reduce file sizes to reduce time before render starts
 * Optimise images to prevent wasted bandwidth
 * Leverage client side caching to the best of our ability
 * MOBILE - Achieve 100/100 UX scores
+* 3rd party javascripts
 
 
 ## Prevent Render Blocking - CSS
@@ -59,4 +61,19 @@ Although browsers wait for every external script to be loaded before any JS is e
 
 This does not mean that you cannot use jQuery at all, however. jQuery functions are perfectly safe to use as long as when they are called, jQuery is loaded and ready to go. Above I said that the majority of jQuery is used for attaching listeners and plugins to different DOM elements, and that this has to run when the DOM is ready to have listeners attached. You will know that most of the code you write sits inside `$(document).ready()`, a function that only runs the code inside when the DOM is ready. All we need to do is replace `$(document).ready()` (which won't work because no jQuery) with a native JS version.
 
+```javascript
+// This will work
+document.addEventListener("DOMContentLoaded", function(event) { 
+  $(".chosen").chosen();
+});
+
+// This will complain about missing jQuery
+$(document).ready(function(){
+  $(".chosen").chosen();
+})
+```
+
+See how you can use jQuery inside the event listener? On the first pass of the javascript execution, all that runs is the vanilla JS that sets up functions to run when `DOMContentLoaded` fires. For that event to fire, the external JS which includes jQuery must have been downloaded and initialised, meaning that now `$` is defined and our code works as expected.
+
+This removes the jQuery dependency from everything that happens before page load, making it safe to load at the bottom of the DOM. One slight problem, is that the `DOMContentLoaded` event is not available in IE8, so if you need it there then you will have to fake it yourself. Good Luck.
 
