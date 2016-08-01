@@ -1,5 +1,5 @@
 # PageSpeed Tutorial
-### How to get the fastest sites in the West
+### How to get the fastest sites in the ~~west~~ WORLD!
 
 This is a tutorial on how to build sites to acheive the best [Pagespeed Insights](https://developers.google.com/speed/pagespeed/insights/) scores. A lot of this is specific to the [Volcanic](https://www.volcanic.co.uk) platform, but will apply to other sites aswell. I have attempted to explain *why* each section is important and how it helps improve the score.
 
@@ -129,8 +129,6 @@ Here is an example of how a theme.liquid layout file could look with all the opt
 <html lang="en" class="no-js">
   <head>
     {% header_meta_content %}
-    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
-    <meta name="theme-color" content="#ffffff">
     
     {{ 'stylesheets/application.css' | inline_style_from_universal }}
     {{ 'stylesheets/application.css' | inline_style_from_manifest }} 
@@ -138,20 +136,15 @@ Here is an example of how a theme.liquid layout file could look with all the opt
     <link href="{{ 'images/favicon.png' | asset_url }}" rel="Shortcut Icon" type="image/x-icon">
     {% ga_javascript_code %}
   </head>
-  <body{% if params.edit == 'on' %} class="edit"{% endif %}>
-    <div>
-      <div class="connecting-loader"><p>Connecting...</p></div>
+  <body{% if params.edit == 'on' %} class="edit"{% endif %}>    
       {% admin_content %}
-      {% content_for_body %} 
-      
+      {% content_for_body %}      
       
       {% include 'shared/header' %}
-      {{ content_for_layout }}
-      
+      {{ content_for_layout }}      
       {% include 'shared/footer' %}
     </div>
-    {% include 'global_footer'%}
-  
+      
     {{ 'javascripts/application.js' | u_asset_url | u_javascript_tag }}
     {{ 'javascripts/application.js' | asset_url | javascript_tag }}
     {% platform_js %}
