@@ -44,11 +44,12 @@ Similar to CSS, any JS in the `<head>` blocks rendering. Any external files in t
 There is an argument that a JS file is only truly not render blocking if it is explictly loaded asynchronously, or is loaded in a deferred manner by other inline JS. However, experiments have shown that loading the JS outside `<head>` and just before the closing `</body>` is sufficient to pass the rule in Pagespeed Insights.
 
 ```html
-.
-.
-.
-  {{ 'javascripts/application.js' | u_asset_url | u_javascript_tag }}
-  {{ 'javascripts/application.js' | asset_url | javascript_tag }}
-</body>
+    .
+    .
+    .
+    {{ 'javascripts/application.js' | u_asset_url | u_javascript_tag }}
+    {{ 'javascripts/application.js' | asset_url | javascript_tag }}
+  </body>
+</html>
 ```
 
