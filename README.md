@@ -10,7 +10,7 @@ The following points can be completed in any order, and each step will help the 
 These are the key points to consider that we will be optimising:
 * Prevent stylesheet load blocking the page render
 * Prevent javascript load from blocking page render
-* Replace `{{ content_for_header }}`
+* Replace `{% content_for_header %}`
 * Reduce file sizes to reduce time before render starts
 * Optimise images to prevent wasted bandwidth
 * Leverage client side caching to the best of our ability
@@ -75,5 +75,16 @@ $(document).ready(function(){
 
 See how you can use jQuery inside the event listener? On the first pass of the javascript execution, all that runs is the vanilla JS that sets up functions to run when `DOMContentLoaded` fires. For that event to fire, the external JS which includes jQuery must have been downloaded and initialised, meaning that now `$` is defined and our code works as expected.
 
-This removes the jQuery dependency from everything that happens before page load, making it safe to load at the bottom of the DOM. One slight problem, is that the `DOMContentLoaded` event is not available in IE8, so if you need it there then you will have to fake it yourself. Good Luck.
+This removes the jQuery dependency from everything that happens before page load, making it safe to load at the bottom of the DOM. The load order of any plugins in the `application.js` file is unchanged, so all dependencies there behave the same as they always have. One slight problem is that the `DOMContentLoaded` event is not available in IE8, so if you need it there then you will have to fake it yourself. Good Luck.
+
+## Replace `{% content_for_header %}`
+
+`{% content_for_header %}` includes a lot of code that is the same for each site, or can be automated, such as Google Analytics. This includes `<meta>` elements as well as `<scripts>`. Now, we want all the `<meta>` elements to still be in the `<head>`, but we want all the javascript to be in the footer.
+
+This means that the `{% content_for_header %}` has been split into two new tags to be used when the javascript is in the footer.
+
+`{% header_meta_content %}` contains only header specific content, i.e. page title, metadescription, OpenGraph data etc. This can be put at the top of the `<head>`.
+
+`{% platform_js %}` contains only `<script>` elements, and can be put after the other javascript, just before the `</body>` tag.
+
 
