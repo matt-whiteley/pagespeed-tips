@@ -53,3 +53,10 @@ There is an argument that a JS file is only truly not render blocking if it is e
 </html>
 ```
 
+**WARNING:** This now means that jQuery is loaded at the END of the page. Read on to find out how this affects your code.
+
+Although browsers wait for every external script to be loaded before any JS is executed, it is important to remember that all scripts **are executed int he order they appear in the DOM**. This means that you inline `<script>` up by the main nav will execute before theme's JS file is loaded. Libraries such as jQuery are now loaded at the very bottom of the DOM, so everyone's favourite function `$(document).ready()` is NOT going to work.
+
+This does not mean that you cannot use jQuery at all, however. jQuery functions are perfectly safe to use as long as when they are called, jQuery is loaded and ready to go. Above I said that the majority of jQuery is used for attaching listeners and plugins to different DOM elements, and that this has to run when the DOM is ready to have listeners attached. You will know that most of the code you write sits inside `$(document).ready()`, a function that only runs the code inside when the DOM is ready. All we need to do is replace `$(document).ready()` (which won't work because no jQuery) with a native JS version.
+
+
