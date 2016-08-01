@@ -89,9 +89,9 @@ This means that the `{% content_for_header %}` has been split into two new tags 
 
 ##Reduce File Sizes
 
-Although Pagespeed Insights makes little mention of file size unless the html is huge, it is known that the page rank algoritm used in the search index does care about total page speed, and download time on mobile devices. Care needs to be made to ensure that unused javascript libraries are not just left in themes, or some copy and pasted css that doesn't even style any element on the page.
+Although Pagespeed Insights makes little mention of file size unless the HTML is huge, it is known that the page rank algoritm used in the search index does care about total page speed, and download time on mobile devices. Care needs to be made to ensure that unused javascript libraries are not just left in themes, or some copy and pasted CSS that doesn't even style any element on the page.
 
-During experiments, stripping out some unused css and js gained 5 points on the mobile score, making the jump into the 85+ green band.
+During experiments, stripping out some unused CSS and JS gained 5 points on the mobile score, making the jump into the 85+ green band.
 
 ##Optimise Images
 
@@ -99,7 +99,7 @@ As an addition to general file size reduction, a specific mention needs to be ma
 
 Any images that are in the theme's images folder are now compressed when the theme is deployed. The deploy server attempts lossless compression, but if at all possible it is better for the image to be resized and compressed using a tool like Photoshop before it is even added to the theme.
 
-It is also crucial that images are loaded in the resolution needed. Some themes load an image with 1200x700 resolution, but once the css rules are applied it is displayed at 90x50 pixels. The browser will still have to download the huge image files before it can shrink them with css. For some sites a large image is needed for the responsive design, but on others the images keep a constant size on all devices and as such can be requested in the right resolution.
+It is also crucial that images are loaded in the resolution needed. Some themes load an image with 1200x700 resolution, but once the CSS rules are applied it is displayed at 90x50 pixels. The browser will still have to download the huge image files before it can shrink them with CSS. For some sites a large image is needed for the responsive design, but on others the images keep a constant size on all devices and as such can be requested in the right resolution.
 
 If you hover over an image in the inspector in Chrome, it gives you the current dimensions, as well as the 'Natural' resolution of the image file. These should ideally be identical.
 
@@ -114,7 +114,51 @@ Pagespeed Insights provides quite a good explanation on how to fix this, and mos
 
 ##3rd Party Resources
 
-These were touched on in the 
+These were touched on in the caching section, but here are a few more tricks to be aware of when building a theme:
+* Eventbeat scoops should use at least version 4 of the scoop, as it has been optimised for passing pagespeed rules, along with many other bugfixes.
+* Any ad loading code, doubleclick etc., should be running in asynchronous mode. Details on this can be found in the documentation, but when in this mode the adverts are loaded after the page is ready and do not cause render blocking issues.
+* Anything using Google's various APIs needs to be aware of when it is being loaded. Many of them have a queue system which stores the requests until the code has been loaded, at which point it processes through the backlog.
+
+
+## Full Theme Layout Example
+
+Here is an example of how a theme.liquid layout file could look with all the optimisations in place:
+
+```html
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+  <head>
+    {% header_meta_content %}
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+    <meta name="theme-color" content="#ffffff">
+    
+    {{ 'stylesheets/application.css' | inline_style_from_universal }}
+    {{ 'stylesheets/application.css' | inline_style_from_manifest }} 
+    
+    <link href="{{ 'images/favicon.png' | asset_url }}" rel="Shortcut Icon" type="image/x-icon">
+    {% ga_javascript_code %}
+  </head>
+  <body{% if params.edit == 'on' %} class="edit"{% endif %}>
+    <div>
+      <div class="connecting-loader"><p>Connecting...</p></div>
+      {% admin_content %}
+      {% content_for_body %} 
+      
+      
+      {% include 'shared/header' %}
+      {{ content_for_layout }}
+      
+      {% include 'shared/footer' %}
+    </div>
+    {% include 'global_footer'%}
+  
+    {{ 'javascripts/application.js' | u_asset_url | u_javascript_tag }}
+    {{ 'javascripts/application.js' | asset_url | javascript_tag }}
+    {% platform_js %}
+  </body>
+</html>
+
+```
 
 
 
