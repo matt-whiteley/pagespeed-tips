@@ -137,14 +137,13 @@ Here is an example of how a theme.liquid layout file could look with all the opt
     {% ga_javascript_code %}
   </head>
   <body{% if params.edit == 'on' %} class="edit"{% endif %}>    
-      {% admin_content %}
-      {% content_for_body %}      
-      
-      {% include 'shared/header' %}
-      {{ content_for_layout }}      
-      {% include 'shared/footer' %}
-    </div>
-      
+    {% admin_content %}
+    {% content_for_body %}      
+    
+    {% include 'shared/header' %}
+    {{ content_for_layout }}      
+    {% include 'shared/footer' %}
+          
     {{ 'javascripts/application.js' | u_asset_url | u_javascript_tag }}
     {{ 'javascripts/application.js' | asset_url | javascript_tag }}
     {% platform_js %}
