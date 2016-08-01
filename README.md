@@ -87,4 +87,35 @@ This means that the `{% content_for_header %}` has been split into two new tags 
 
 `{% platform_js %}` contains only `<script>` elements, and can be put after the other javascript, just before the `</body>` tag.
 
+##Reduce File Sizes
+
+Although Pagespeed Insights makes little mention of file size unless the html is huge, it is known that the page rank algoritm used in the search index does care about total page speed, and download time on mobile devices. Care needs to be made to ensure that unused javascript libraries are not just left in themes, or some copy and pasted css that doesn't even style any element on the page.
+
+During experiments, stripping out some unused css and js gained 5 points on the mobile score, making the jump into the 85+ green band.
+
+##Optimise Images
+
+As an addition to general file size reduction, a specific mention needs to be made regarding images. Images are often the largest external resource loaded by a site; a single image can be larger than all the HTML, CSS and JS combined.
+
+Any images that are in the theme's images folder are now compressed when the theme is deployed. The deploy server attempts lossless compression, but if at all possible it is better for the image to be resized and compressed using a tool like Photoshop before it is even added to the theme.
+
+It is also crucial that images are loaded in the resolution needed. Some themes load an image with 1200x700 resolution, but once the css rules are applied it is displayed at 90x50 pixels. The browser will still have to download the huge image files before it can shrink them with css. For some sites a large image is needed for the responsive design, but on others the images keep a constant size on all devices and as such can be requested in the right resolution.
+
+If you hover over an image in the inspector in Chrome, it gives you the current dimensions, as well as the 'Natural' resolution of the image file. These should ideally be identical.
+
+##Leverage Client Side Caching
+
+The majority of these changes involve adding cache headers to the requests server side, but it is worth knowing that some 3rd party resources, like tracking or chat widgets, often have missing or less than perfect cache settings. Adding a plugin at the request of a client can knock 10 points off the score. There is nothing you can do about this, but you can at least inform the client that the plugin they have insisted on is what is ruining their score, and not anything to do with our platform.
+
+
+## Achieve 100/100 UX
+
+Pagespeed Insights provides quite a good explanation on how to fix this, and most of our sites pass by default due to good design choices. The only common failure point is `<a>` tags getting too close to gether on mobile screen sizes which fails the tap target size rule. This can easily be fixed with some extra line height or padding when on mobile.
+
+##3rd Party Resources
+
+These were touched on in the 
+
+
+
 
