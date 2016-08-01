@@ -1,7 +1,7 @@
 # PageSpeed Tutorial
 ### How to get the fastest sites in the West
 
-This is a tutorial on how to build sites to acheive the best pagespeed scores. A lot of this is specific to the [Volcanic](https://www.volcanic.co.uk) platform, but will apply to other sites aswell. I have attempted to explain *why* each section is important and how it helps improve the score.
+This is a tutorial on how to build sites to acheive the best [Pagespeed Insights](https://developers.google.com/speed/pagespeed/insights/) scores. A lot of this is specific to the [Volcanic](https://www.volcanic.co.uk) platform, but will apply to other sites aswell. I have attempted to explain *why* each section is important and how it helps improve the score.
 
 The following points can be completed in any order, and each step will help the process.
 
@@ -34,5 +34,21 @@ with
 ```liquid
 {{ 'stylesheets/application.css' | inline_style_from_universal }}
 {{ 'stylesheets/application.css' | inline_style_from_manifest }}
+```
+**Please note:** Currently, the inlining of CSS is a bit temperamental on DEV, so I would only swap to inlined style just before an export to staging/production. Using the seperate stylesheets in dev also allows you to take advantage of the development assets caching we have implemented to speed up dev page load times.
+
+## Prevent Render Blocking - Javascript
+
+Similar to CSS, any JS in the `<head>` blocks rendering. Any external files in the head have to have finished downloading before the browser will continue parsing and rendering the body. When you consider that the vast majority of javascript is attaching listeners to elements *after* the DOM is ready, holding up the ready process harms the entire process. The faster the DOM is ready the faster we can attach our listeners and do cool stuff.
+
+There is an argument that a JS file is only truly not render blocking if it is explictly loaded asynchronously, or is loaded in a deferred manner by other inline JS. However, experiments have shown that loading the JS outside `<head>` and just before the closing `</body>` is sufficient to pass the rule in Pagespeed Insights.
+
+```html
+.
+.
+.
+  {{ 'javascripts/application.js' | u_asset_url | u_javascript_tag }}
+  {{ 'javascripts/application.js' | asset_url | javascript_tag }}
+</body>
 ```
 
